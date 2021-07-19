@@ -1,4 +1,5 @@
 import * as React from 'react';
+import ReactMarkdown from 'react-markdown';
 
 import './App.css';
 
@@ -6,7 +7,7 @@ function App() {
   const [allPosts, setAllPosts] = React.useState<any[]>([]);
   const [authors, setAuthors] = React.useState<any[]>([]);
   const [postsFromAuthor, setPostsFromAuthor] = React.useState<any[]>([]);
-  const [selectedPostId, setSelectedPostId] = React.useState<string>('');
+  const [selectedPostBody, setSelectedPostBody] = React.useState<string>('');
 
   // fetching all posts and placing them into a local state
   React.useEffect(() => {
@@ -36,7 +37,15 @@ function App() {
     setAuthors(uniqueAuthors);
   }, [allPosts]);
 
-  // this needs to sort the posts to only display the ones from the author clicked
+  function getSummary(body: string) {
+    // presuming summary is the first title of the post
+    // we split with \n, as it's the first character breaking the title, and we grab first element
+    const summary = body.split('\n')[0];
+    // we remove the first 2 characters(# and space)
+    return summary.slice(2);
+  }
+
+  // this needs to sort the posts to only display the ones from the selected author
   function handleClickAuthor(e: React.MouseEvent<HTMLElement>) {
     const authorSelected = e.target as HTMLElement;
     // get all posts from that author
@@ -58,22 +67,8 @@ function App() {
     const selectedPost = allPosts.find(
       (post) => post.title === postTitleSelected
     );
-    setSelectedPostId(selectedPost.id);
+    setSelectedPostBody(selectedPost.body);
   }
-
-  function displayBodyOfPost() {
-    const postToShow = allPosts.find((post) => post.id === selectedPostId);
-    return (
-      <div>
-        <p>{postToShow.body}</p>
-      </div>
-    );
-  }
-
-  // Make the title of each post in the list clickable. When you click a post title,
-  // display the formatted post body and title. The post body is formatted as
-  // Markdown and the post display should use the formatted Markdown.
-  // 6 tests
 
   // this will insert the needed table body depending if an author has been clicked or not
   function displayPosts(postsToDisplay: any) {
@@ -85,13 +80,15 @@ function App() {
               {post.title}
             </button>
           </td>
-          <td>summary</td>
+          <td>{getSummary(post.body)}</td>
           <td>{post.author.name}</td>
           <td>{formatDate(post.publishedAt)}</td>
         </tr>
       );
     });
   }
+  // 6 tests
+
   return (
     <div>
       <h1 className="title">All posts</h1>
@@ -126,8 +123,13 @@ function App() {
             : displayPosts(allPosts)}
         </tbody>
       </table>
-      {/* Filter the posts with the id to display it underneath */}
-      <div>{selectedPostId ? displayBodyOfPost() : null}</div>
+      <div>
+        {selectedPostBody ? (
+          <div>
+            <ReactMarkdown>{selectedPostBody}</ReactMarkdown>
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
