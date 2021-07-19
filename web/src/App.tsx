@@ -6,6 +6,7 @@ function App() {
   const [allPosts, setAllPosts] = React.useState<any[]>([]);
   const [authors, setAuthors] = React.useState<any[]>([]);
   const [postsFromAuthor, setPostsFromAuthor] = React.useState<any[]>([]);
+  const [selectedPostId, setSelectedPostId] = React.useState<string>('');
 
   // fetching all posts and placing them into a local state
   React.useEffect(() => {
@@ -36,11 +37,11 @@ function App() {
   }, [allPosts]);
 
   // this needs to sort the posts to only display the ones from the author clicked
-  function handleClickAuthor(e: any) {
-    const authorClicked = e.target.innerText;
+  function handleClickAuthor(e: React.MouseEvent<HTMLElement>) {
+    const authorSelected = e.target as HTMLElement;
     // get all posts from that author
     const authorsPosts = allPosts.filter((post) => {
-      return post.author.name === authorClicked;
+      return post.author.name === authorSelected.innerText;
     });
     // set it into the corresponding state to display them afterwards
     setPostsFromAuthor(authorsPosts);
@@ -51,7 +52,27 @@ function App() {
     return `${dd}-${mm}-${yyyy} ${hh}:${mi}`;
   }
 
-  // 5 title should be clickable to show the formatted (md format) of the body
+  function handleClickPost(e: React.MouseEvent<HTMLElement>) {
+    const button = e.target as HTMLButtonElement;
+    const postTitleSelected = button.innerText;
+    const selectedPost = allPosts.find(
+      (post) => post.title === postTitleSelected
+    );
+    setSelectedPostId(selectedPost.id);
+  }
+
+  function displayBodyOfPost() {
+    const postToShow = allPosts.find((post) => post.id === selectedPostId);
+    return (
+      <div>
+        <p>{postToShow.body}</p>
+      </div>
+    );
+  }
+
+  // Make the title of each post in the list clickable. When you click a post title,
+  // display the formatted post body and title. The post body is formatted as
+  // Markdown and the post display should use the formatted Markdown.
   // 6 tests
 
   // this will insert the needed table body depending if an author has been clicked or not
@@ -59,7 +80,11 @@ function App() {
     return postsToDisplay.map((post: any) => {
       return (
         <tr key={post.id}>
-          <td>{post.title}</td>
+          <td>
+            <button value="hey" onClick={handleClickPost}>
+              {post.title}
+            </button>
+          </td>
           <td>summary</td>
           <td>{post.author.name}</td>
           <td>{formatDate(post.publishedAt)}</td>
@@ -101,6 +126,8 @@ function App() {
             : displayPosts(allPosts)}
         </tbody>
       </table>
+      {/* Filter the posts with the id to display it underneath */}
+      <div>{selectedPostId ? displayBodyOfPost() : null}</div>
     </div>
   );
 }
