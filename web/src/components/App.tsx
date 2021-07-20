@@ -1,11 +1,11 @@
 import * as React from 'react';
-import PostContent from './components/PostBody';
-import Authors from './components/Authors';
-import { useAllPosts } from './hooks/useAllPosts';
-import { formatDate } from './utils/formatDate';
-import { getSummary } from './utils/getSummary';
+import PostContent from './PostBody';
+import Authors from './Authors';
+import { useAllPosts } from '../hooks/useAllPosts';
+import { formatDate } from '../utils/formatDate';
+import { getSummary } from '../utils/getSummary';
 
-import './App.css';
+import '../style/App.css';
 
 function App() {
   const [allPosts, isLoading, error] = useAllPosts();
