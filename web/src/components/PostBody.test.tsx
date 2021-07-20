@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import ReactDOM from 'react-dom';
-import PostBody from './Authors';
+import PostBody from './PostBody';
 
 test('PostBody renders without crashing', () => {
   const div = document.createElement('div');

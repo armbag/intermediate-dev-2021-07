@@ -1,9 +1,10 @@
 import * as React from 'react';
+import { PostI } from '../@types/types';
 
 export function useAllPosts() {
-  const [allPosts, setAllPosts] = React.useState<any[]>([]);
+  const [allPosts, setAllPosts] = React.useState<PostI[]>([]);
   const [isLoading, setIsLoading] = React.useState<any>(false);
-  const [error, setError] = React.useState<any>(false);
+  const [error, setError] = React.useState<boolean>(false);
   // fetching all posts and placing them into a local state
   React.useEffect(() => {
     setIsLoading(true);
@@ -13,7 +14,7 @@ export function useAllPosts() {
         // before setting them into the state, this will sort them right away so they
         // appear in reverse chronological order
         const sortedPosts = unsortedPosts.sort(
-          (previousPost: any, nextPost: any) => {
+          (previousPost: PostI, nextPost: PostI) => {
             return (
               +new Date(nextPost.publishedAt) -
               +new Date(previousPost.publishedAt)

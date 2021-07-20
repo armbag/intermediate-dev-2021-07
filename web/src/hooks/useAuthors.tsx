@@ -1,17 +1,8 @@
 import * as React from 'react';
-
-interface PostI {
-  id: string;
-  body: string;
-  publishedAt: string;
-  author: {
-    name: string;
-    id: string;
-  };
-}
+import { PostI } from '../@types/types';
 
 export function useAuthors(allPosts: any) {
-  const [authors, setAuthors] = React.useState<any[]>([]);
+  const [authors, setAuthors] = React.useState<string[]>([]);
   // from all the posts get all authors and filter them to not have duplicates
   React.useEffect(() => {
     const allAuthors = allPosts.map((post: PostI) => post.author.name);
