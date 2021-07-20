@@ -1,33 +1,18 @@
 import * as React from 'react';
-import ReactMarkdown from 'react-markdown';
+import PostContent from './components/PostBody';
+import Authors from './components/Authors';
 import { useAllPosts } from './hooks/useAllPosts';
-import { useAllAuthors } from './hooks/useAllAuthors';
 import { formatDate } from './utils/formatDate';
+import { getSummary } from './utils/getSummary';
 
 import './App.css';
 
 function App() {
   const allPosts = useAllPosts();
-  const authors = useAllAuthors(allPosts);
   const [postsFromAuthor, setPostsFromAuthor] = React.useState<any[]>([]);
   const [selectedPostBody, setSelectedPostBody] = React.useState<string>('');
 
-  function getSummary(body: string) {
-    // presuming summary is the first title of the post
-    // we split with \n, as it's the first character breaking the title, and we grab first element
-    const summary = body.split('\n')[0];
-    // we remove the first 2 characters(# and space)
-    return summary.slice(2);
-  }
-
-  // this will sort the posts to only display the ones from the selected author
-  function handleClickAuthor(e: React.MouseEvent<HTMLElement>) {
-    const authorSelected = e.target as HTMLElement;
-    // get all posts from that author
-    const authorsPosts = allPosts.filter((post) => {
-      return post.author.name === authorSelected.innerText;
-    });
-    // set it into the corresponding state to display them afterwards
+  function handleAuthorSelection(authorsPosts: any) {
     setPostsFromAuthor(authorsPosts);
   }
 
@@ -59,23 +44,7 @@ function App() {
   return (
     <div className="container">
       <h1 className="title">All posts</h1>
-      <ul>
-        <li
-          onClick={() => {
-            setPostsFromAuthor([]);
-          }}
-          className="author selected"
-        >
-          All posts
-        </li>
-        {authors.map((author) => {
-          return (
-            <li key={author} onClick={handleClickAuthor} className="author">
-              {author}
-            </li>
-          );
-        })}
-      </ul>
+      <Authors posts={allPosts} handleAuthorSelection={handleAuthorSelection} />
       <table>
         <thead>
           <tr className="table-head">
@@ -91,13 +60,7 @@ function App() {
             : displayPosts(allPosts)}
         </tbody>
       </table>
-      <div>
-        {selectedPostBody ? (
-          <div>
-            <ReactMarkdown>{selectedPostBody}</ReactMarkdown>
-          </div>
-        ) : null}
-      </div>
+      {selectedPostBody ? <PostContent content={selectedPostBody} /> : null}
     </div>
   );
 }

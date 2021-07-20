@@ -10,7 +10,7 @@ interface PostI {
   };
 }
 
-export function useAllAuthors(allPosts: any) {
+export function useAuthors(allPosts: any) {
   const [authors, setAuthors] = React.useState<any[]>([]);
   // from all the posts get all authors and filter them to not have duplicates
   React.useEffect(() => {
