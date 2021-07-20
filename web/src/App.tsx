@@ -76,9 +76,7 @@ function App() {
       return (
         <tr key={post.id}>
           <td>
-            <button value="hey" onClick={handleClickPost}>
-              {post.title}
-            </button>
+            <button onClick={handleClickPost}>{post.title}</button>
           </td>
           <td>{getSummary(post.body)}</td>
           <td>{post.author.name}</td>
@@ -90,19 +88,20 @@ function App() {
   // 6 tests
 
   return (
-    <div>
+    <div className="container">
       <h1 className="title">All posts</h1>
       <ul>
         <li
           onClick={() => {
             setPostsFromAuthor([]);
           }}
+          className="author"
         >
           All posts
         </li>
         {authors.map((author) => {
           return (
-            <li key={author} onClick={handleClickAuthor}>
+            <li key={author} onClick={handleClickAuthor} className="author">
               {author}
             </li>
           );
