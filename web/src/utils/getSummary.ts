@@ -1,7 +1,10 @@
 export function getSummary(body: string) {
-  // presuming summary is the first title of the post
-  // we split with \n, as it's the first character breaking the title, and we grab first element
-  const summary = body.split('\n')[0];
-  // we remove the first 2 characters(# and space)
-  return summary.slice(2);
+  // getting the first paragraph which is the forth element (title, space, subtitle, space, paragraph)
+  const paragraph = body.split('\n')[4];
+  // they all start by Lorem markdownum so we'll remove it
+  const initialCleaning = paragraph.replace('Lorem markdownum ', '');
+  const cleanParagraph = initialCleaning.replace('Lorem markdownum, ', '');
+
+  // we return the beginning of the string with etc to make it look as an excerpt
+  return cleanParagraph.substr(0, 30).trim() + '...';
 }
