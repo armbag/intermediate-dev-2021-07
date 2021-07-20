@@ -1,8 +1,8 @@
 /* eslint-env jest */
 import ReactDOM from 'react-dom';
-import PostBody from './PostBody';
+import Post from './Post';
 
 test('PostBody renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<PostBody content="# sdfasdfasdfasd" />, div);
+  ReactDOM.render(<Post title="title" content="# sdfasdfasdfasd" />, div);
 });

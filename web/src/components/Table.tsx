@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { PostI, TableI } from '../@types/types';
 import { formatDate } from '../utils/formatDate';
 import { getSummary } from '../utils/getSummary';
@@ -9,7 +10,8 @@ function Table({ allPosts, postsFromAuthor, handleSelectedTitle }: TableI) {
     const selectedPost = allPosts.find(
       (post: PostI) => post.title === postTitleSelected
     );
-    handleSelectedTitle(selectedPost?.body);
+    // handleSelectedTitle(selectedPost?.body, selectedPost?.title);
+    handleSelectedTitle(selectedPost);
   }
 
   // this will insert the needed table body depending if an author has been clicked or not
@@ -28,7 +30,7 @@ function Table({ allPosts, postsFromAuthor, handleSelectedTitle }: TableI) {
     });
   }
 
-  // if posts from authors returned is an empty array
+  // if posts from authors return an empty array
   // we know we have display all posts
   return (
     <table>

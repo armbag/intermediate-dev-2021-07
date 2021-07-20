@@ -8,7 +8,6 @@ function Authors({ posts, handleAuthorSelection }: PropsAuthors) {
   // this will sort the posts to only display the ones from the selected author
   function handleClickAuthor(e: React.MouseEvent<HTMLElement>) {
     const authorSelected = e.target as HTMLElement;
-    // get all posts from that author
     const authorsPosts = posts.filter((post) => {
       return post.author.name === authorSelected.innerText;
     });
