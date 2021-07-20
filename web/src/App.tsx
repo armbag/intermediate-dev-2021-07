@@ -1,41 +1,16 @@
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
+import { useAllPosts } from './hooks/useAllPosts';
+import { useAllAuthors } from './hooks/useAllAuthors';
+import { formatDate } from './utils/formatDate';
 
 import './App.css';
 
 function App() {
-  const [allPosts, setAllPosts] = React.useState<any[]>([]);
-  const [authors, setAuthors] = React.useState<any[]>([]);
+  const allPosts = useAllPosts();
+  const authors = useAllAuthors(allPosts);
   const [postsFromAuthor, setPostsFromAuthor] = React.useState<any[]>([]);
   const [selectedPostBody, setSelectedPostBody] = React.useState<string>('');
-
-  // fetching all posts and placing them into a local state
-  React.useEffect(() => {
-    fetch(process.env.REACT_APP_SERVER_URL + 'posts')
-      .then((res) => res.json())
-      .then((unsortedPosts) => {
-        // before setting them into the state, this will sort them right away so they
-        // appear in reverse chronological order
-        const sortedPosts = unsortedPosts.sort(
-          (previousPost: any, nextPost: any) => {
-            return (
-              +new Date(nextPost.publishedAt) -
-              +new Date(previousPost.publishedAt)
-            );
-          }
-        );
-        setAllPosts(sortedPosts);
-      });
-  }, []);
-
-  // from all the posts get all authors and filter them to not have duplicates
-  React.useEffect(() => {
-    const allAuthors = allPosts.map((post) => post.author.name);
-    const uniqueAuthors = allAuthors.filter(
-      (author, i, self) => self.indexOf(author) === i
-    );
-    setAuthors(uniqueAuthors);
-  }, [allPosts]);
 
   function getSummary(body: string) {
     // presuming summary is the first title of the post
@@ -45,7 +20,7 @@ function App() {
     return summary.slice(2);
   }
 
-  // this needs to sort the posts to only display the ones from the selected author
+  // this will sort the posts to only display the ones from the selected author
   function handleClickAuthor(e: React.MouseEvent<HTMLElement>) {
     const authorSelected = e.target as HTMLElement;
     // get all posts from that author
@@ -56,12 +31,7 @@ function App() {
     setPostsFromAuthor(authorsPosts);
   }
 
-  function formatDate(date: string) {
-    const [yyyy, mm, dd, hh, mi] = date.split(/[/:\-T]/);
-    return `${dd}-${mm}-${yyyy} ${hh}:${mi}`;
-  }
-
-  function handleClickPost(e: React.MouseEvent<HTMLElement>) {
+  function handleClickPostTitle(e: React.MouseEvent<HTMLElement>) {
     const button = e.target as HTMLButtonElement;
     const postTitleSelected = button.innerText;
     const selectedPost = allPosts.find(
@@ -76,7 +46,7 @@ function App() {
       return (
         <tr key={post.id}>
           <td>
-            <button onClick={handleClickPost}>{post.title}</button>
+            <button onClick={handleClickPostTitle}>{post.title}</button>
           </td>
           <td>{getSummary(post.body)}</td>
           <td>{post.author.name}</td>
@@ -85,7 +55,6 @@ function App() {
       );
     });
   }
-  // 6 tests
 
   return (
     <div className="container">
@@ -95,7 +64,7 @@ function App() {
           onClick={() => {
             setPostsFromAuthor([]);
           }}
-          className="author"
+          className="author selected"
         >
           All posts
         </li>
