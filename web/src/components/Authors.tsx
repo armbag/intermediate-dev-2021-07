@@ -16,6 +16,9 @@ function Authors(props: PropsAuthors) {
     });
     props.handleAuthorSelection(authorsPosts);
   }
+  if (!props.posts.length) {
+    return null;
+  }
   return (
     <ul>
       <li

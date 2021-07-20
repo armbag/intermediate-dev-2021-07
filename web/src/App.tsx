@@ -8,7 +8,7 @@ import { getSummary } from './utils/getSummary';
 import './App.css';
 
 function App() {
-  const allPosts = useAllPosts();
+  const [allPosts, isLoading, error] = useAllPosts();
   const [postsFromAuthor, setPostsFromAuthor] = React.useState<any[]>([]);
   const [selectedPostBody, setSelectedPostBody] = React.useState<string>('');
 
@@ -20,7 +20,7 @@ function App() {
     const button = e.target as HTMLButtonElement;
     const postTitleSelected = button.innerText;
     const selectedPost = allPosts.find(
-      (post) => post.title === postTitleSelected
+      (post: any) => post.title === postTitleSelected
     );
     setSelectedPostBody(selectedPost.body);
   }
@@ -44,6 +44,8 @@ function App() {
   return (
     <div className="container">
       <h1 className="title">All posts</h1>
+      {isLoading ? <p>Loading...</p> : null}
+      {error ? <p>An error occured, please try again</p> : null}
       <Authors posts={allPosts} handleAuthorSelection={handleAuthorSelection} />
       <table>
         <thead>

@@ -2,8 +2,11 @@ import * as React from 'react';
 
 export function useAllPosts() {
   const [allPosts, setAllPosts] = React.useState<any[]>([]);
+  const [isLoading, setIsLoading] = React.useState<any>(false);
+  const [error, setError] = React.useState<any>(false);
   // fetching all posts and placing them into a local state
   React.useEffect(() => {
+    setIsLoading(true);
     fetch(process.env.REACT_APP_SERVER_URL + 'posts')
       .then((res) => res.json())
       .then((unsortedPosts) => {
@@ -18,8 +21,12 @@ export function useAllPosts() {
           }
         );
         setAllPosts(sortedPosts);
-      });
+      })
+      .catch(() => {
+        setError(true);
+      })
+      .finally(() => setIsLoading(false));
   }, []);
 
-  return allPosts;
+  return [allPosts, isLoading, error];
 }
